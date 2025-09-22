@@ -3,13 +3,23 @@
 > A from‑scratch **Deep Q‑Network (DQN)** that learns to solve Gymnasium’s **LunarLander‑v3**. Implemented in PyTorch with **experience replay**, a **target network**, and **ε‑greedy** exploration. Includes experiments, hyperparameter sweeps, and a brief Double DQN attempt.
 ---
 ## 🎬 Demo (side‑by‑side)
-**Untrained (random policy)**
 
-![readMe_crash](https://github.com/user-attachments/assets/1baf5c10-b72b-4c4d-8c48-1a1471466018)
-
-**Trained DQN (exploitation)**
-![lunar_lander](https://github.com/user-attachments/assets/8ee73791-eab1-4d2f-874b-edd66a73245d)
-
+<table>
+<tr>
+<td align="center">
+<img src="https://github.com/user-attachments/assets/1baf5c10-b72b-4c4d-8c48-1a1471466018" width="370" alt="Failed Lunar Lander">
+<br>
+<p align="center"><strong>Untrained (random policy)</strong></p>
+</td>
+</tr>
+<tr>
+<td align="center">
+<img src="https://github.com/user-attachments/assets/8ee73791-eab1-4d2f-874b-edd66a73245d" width="370" alt="Passed Lunar Lander">
+<br>
+<p align="center"><strong>Trained DQN (exploitation)</strong></p>
+</td>
+</tr>
+</table>
 ---
 
 ## 💡 Intuition first (no jargon)
