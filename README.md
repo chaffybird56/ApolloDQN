@@ -1,23 +1,14 @@
 # Lunar Lander — DQN from Scratch (Hackathon Edition)
 
 > A from‑scratch **Deep Q‑Network (DQN)** that learns to solve Gymnasium’s **LunarLander‑v3**. Implemented in PyTorch with **experience replay**, a **target network**, and **ε‑greedy** exploration. Includes experiments, hyperparameter sweeps, and a brief Double DQN attempt.
-
 ---
-
 ## 🎬 Demo (side‑by‑side)
-
-Paste two GitHub *user‑attachments* video links **on their own lines** (GitHub will auto‑embed). Use the same clip, one with the untrained policy, one with the trained DQN.
-
 **Untrained (random policy)**
 
 ![readMe_crash](https://github.com/user-attachments/assets/1baf5c10-b72b-4c4d-8c48-1a1471466018)
 
 **Trained DQN (exploitation)**
-
-`TRAINED_MP4_URL`
-![lunar_lander](https://github.com/user-attachments/assets/84abf31a-cb73-44db-be06-1e130fea053c)
-
-> Tip: to record, save 60–90s MP4 from your evaluation script, then drag‑and‑drop into a GitHub comment to obtain a permanent `user-attachments` URL.
+![lunar_lander](https://github.com/user-attachments/assets/8ee73791-eab1-4d2f-874b-edd66a73245d)
 
 ---
 
