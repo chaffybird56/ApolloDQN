@@ -133,7 +133,7 @@ Here, “experiments” means **change one thing at a time** (batch size, networ
 * **64×64 network:** enough capacity to model the lander’s dynamics without memorizing noise.
 * **Adam @ \$5\times10^{-4}\$ + Huber:** Adam adapts step sizes per weight; Huber behaves like L2 near the target and L1 on outliers, so occasional bad targets don’t derail training.
 * **\$\gamma=0.99\$:** keeps the agent focused on a *whole landing sequence* (not just the next second) while still discounting the far future.
-* **Replay \$10^{5}\$–\$10^{6}\$, batch \$128\$:** a large, diverse memory prevents reusing the same short pattern; batch 128 yields **stable** gradients without making updates too sluggish.
+* **Replay 10^(5) to 10^(6), batch \$128\$:** a large, diverse memory prevents reusing the same short pattern; batch 128 yields **stable** gradients without making updates too sluggish.
 * **\$\varepsilon\$ schedule \$1.0 \to 0.01\$ (decay \$0.995\$):** plenty of early exploration to discover strategies; settles to exploitation as performance improves.
 * **Target update every \$5\$ episodes:** keeps the target network fresh enough while staying frozen long enough to stabilize bootstrapping.
 * **Grad clip at \$1.0\$:** caps rare gradient spikes when rewards or Q‑targets momentarily jump.
@@ -179,23 +179,9 @@ for episode = 1..N:
 
 ---
 
-## 📹 Side‑by‑side results (recap)
-
-Re‑embed the two MP4s here if you want the final results close to the conclusion:
-
-**Untrained**
-
-`UNTRAINED_MP4_URL`
-
-**Trained DQN**
-
-`TRAINED_MP4_URL`
-
----
-
 ## 🙏 Acknowledgements
 
-Guidance and course material by **Dr. Sorina Dumitrescu** (COMPENG 4SL4 — Fundamentals of Machine Learning). 
+Guidance and course material by **Dr. Sorina Dumitrescu** (McMaster University) 
 
 ---
 
