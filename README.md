@@ -10,11 +10,12 @@ Paste two GitHub *user‑attachments* video links **on their own lines** (GitHub
 
 **Untrained (random policy)**
 
-(https://github.com/user-attachments/assets/fc91ac3b-d850-4c4d-ad8a-61e08d8477c5)
+(https://github.com/user-attachments/assets/fc91ac3b-d850-4c4d-ad8a-61e08d8477c5
 
 **Trained DQN (exploitation)**
 
 `TRAINED_MP4_URL`
+![lunar_lander](https://github.com/user-attachments/assets/84abf31a-cb73-44db-be06-1e130fea053c)
 
 > Tip: to record, save 60–90s MP4 from your evaluation script, then drag‑and‑drop into a GitHub comment to obtain a permanent `user-attachments` URL.
 
