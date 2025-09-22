@@ -1,8 +1,10 @@
 # Lunar Lander — DQN from Scratch (Hackathon Edition)
 
 > A from‑scratch **Deep Q‑Network (DQN)** that learns to solve Gymnasium’s **LunarLander‑v3**. Implemented in PyTorch with **experience replay**, a **target network**, and **ε‑greedy** exploration. Includes experiments, hyperparameter sweeps, and a brief Double DQN attempt.
+
 ---
-## 🎬 Demo
+
+## 🎬 Demo (side‑by‑side)
 
 <table>
 <tr>
@@ -20,6 +22,9 @@
 </td>
 </tr>
 </table>
+
+> Tip: to record, save 60–90s MP4 from your evaluation script, then drag‑and‑drop into a GitHub comment to obtain a permanent `user-attachments` URL.
+
 ---
 
 ## 💡 Intuition first (no jargon)
@@ -30,38 +35,56 @@ Imagine teaching a small rocket to land. At each moment it sees a snapshot of it
 
 ## 🚗 What this project does
 
-1. Observes the **8‑dim state** $s=(x,\,y,\,v_x,\,v_y,\,\theta,\,\dot\theta,\,c_L,\,c_R)$ and picks one of **4 actions** (do nothing / left / main / right thruster).
-2. Learns an **action‑value function** $Q_\theta(s,a)$ that estimates the expected return if action $a$ is taken in state $s$.
-3. Improves the policy by acting **greedily** w\.r.t. $Q_\theta$ while still exploring via **ε‑greedy**.
-4. Stabilizes training with **replay** (decorrelates samples) and a slowly‑updated **target network**.
+**Senses → decides → learns.** On each frame, the lander receives a compact snapshot of its situation (the **state**), chooses a thruster action, gets a reward, and updates its strategy so good choices become more likely.
 
-<div align="center">
-  <img src="FIG5_FROM_REPORT_URL" width="500" alt="Report Fig. 5 — DQN vs Double DQN: average reward over 2000 episodes"/>
-  <br/>
-  <sub><b>Fig 5 (from report).</b> DQN vs Double DQN average reward over 2000 episodes. The baseline DQN outperformed our first Double DQN attempt in this setting.</sub>
-</div>
+**State (8 numbers, fully spelled out).**
+
+* \$x, y\$: horizontal and vertical position relative to the landing pad center (meters).
+* \$v\_x, v\_y\$: horizontal and vertical velocities (m/s).
+* \$\theta\$: body angle (radians), where \$0\$ means upright.
+* \$\dot{\theta}\$: angular velocity (radians/s).
+* \$c\_L, c\_R\$: left and right leg contact indicators (\$0\$ = no contact, \$1\$ = touching ground).
+
+**Actions (4 choices).** Do nothing, fire **left** thruster, fire **main** thruster, or fire **right** thruster.
+
+**What the network learns.** A function \$Q\_\theta(s,a)\$ that scores “how good” action \$a\$ looks in state \$s\$. The agent mostly takes the action with the **highest** score, but sometimes explores.
+
+**How it stays stable.** Two practical tricks are used:
+
+* **Experience replay** (shuffle and reuse past steps so updates aren’t myopic).
+* A slowly refreshed **target network** (a frozen copy that provides stable training targets).
 
 ---
 
 ## 🧠 RL refresher — intuition → math (fully explained)
 
-**Goal.** Learn a rule for choosing thruster actions that leads to gentle, centered landings. After each action the agent gets a **reward** (good if progress, bad if crashes). The aim is to maximize the **discounted return**
+**Goal.** Maximize the total future reward (the **discounted return**):
 
-G\_t = r\_{t+1} + γ·r\_{t+2} + γ²·r\_{t+3} + … ,
+$$
+G_t = \sum_{k=0}^{\infty} \gamma^{k} \, r_{t+k+1}
+$$
 
-where **γ** (gamma) in \[0,1) makes near‑term rewards count a bit more than far‑future ones (stabilizes learning and encodes preference for sooner success).
+where \$\gamma \in \[0,1)\$ (the **discount factor**) slightly prefers near‑term reward and stabilizes learning.
 
-**What is Q(s,a)?** The **action‑value** of taking action *a* in state *s* and then following the current strategy. Think of **Q** as a **scorecard**: higher means that action tends to lead to better landings from that situation.
+**Action‑value (Q) function.** The expected return if we take action \$a\$ in state \$s\$ and then keep following our current strategy (policy \$\pi\$):
 
-**How DQN learns Q.** We approximate Q with a neural net **Q\_theta(s,a)**. For a sampled step (s,a,r,s′), we build a one‑step look‑ahead **target** using a **frozen copy** of the network **Q\_theta\_minus**:
+$$
+Q^{\pi}(s,a) = E[ G_t \mid s_t = s,\ a_t = a,\ \pi ]
+$$
 
-y = r + γ · max over a′ of Q\_theta\_minus(s′, a′)
+Think of \$Q\$ as a **scorecard**: higher \$Q\$ means that action tends to lead to softer, centered landings from that situation.
 
-and nudge Q\_theta(s,a) toward *y* (Huber loss).
-• **Why a frozen copy?** If the target also changed every step, the network would chase a moving goalpost. Freezing it briefly makes the target **stable**.
-• **Why the max over actions?** It assumes we’ll take the **best** next action in s′; that’s the Bellman “look ahead then be greedy” idea.
+**How DQN learns \$Q\$.** A neural network \$Q\_\theta(s,a)\$ is trained to match a **one‑step look‑ahead target** built from a **frozen copy** \$Q\_{\theta^-}\$:
 
-**Exploration vs exploitation.** With **ε‑greedy**, choose a random action with probability ε (to explore); otherwise take the action with the **highest Q‑score** (to exploit what is known). Start high (≈1.0) and **decay** toward a small floor (≈0.01) so exploration fades as the agent becomes competent.
+$$
+ y = r + \gamma \max_{a'} Q_{\theta^-}(s', a')
+$$
+
+The loss (Huber) nudges \$Q\_\theta(s,a)\$ toward \$y\$.
+• *Why a frozen copy?* If the target changed every step, we’d chase a moving goalpost and risk divergence. Freezing \$Q\_{\theta^-}\$ briefly makes targets stable.
+• *Why the max?* It encodes the **Bellman optimality** idea: after moving to \$s'\$, we’ll take the **best** next action.
+
+**Exploration vs. exploitation.** With **\$\varepsilon\$‑greedy**, pick a random action with probability \$\varepsilon\$ (to explore); otherwise pick \$\arg\max\_a Q\_\theta(s,a)\$ (to exploit). Start with large \$\varepsilon\$ (≈1.0) and **decay** to a small floor (≈0.01) so exploration fades as the agent becomes competent.
 
 ---
 
@@ -71,9 +94,9 @@ and nudge Q\_theta(s,a) toward *y* (Huber loss).
 * **Experience replay (memory):** a FIFO buffer of past steps; sampling random minibatches breaks short‑term correlations.
 * **Target network (slow copy):** a periodically updated clone of the policy network that provides stable targets during training.
 * **Loss & optimizer:** Huber (Smooth‑L1) with Adam; gradient clipping prevents occasional exploding updates.
-* **Evaluation:** a test loop with ε set to 0 to report average return over 100 episodes.
+* **Evaluation:** a test loop with \$\varepsilon=0\$ to report average return over 100 episodes.
 
-> Files: `agent_template.py` (DQN + training loop), `state_discretizer.py` (aux utils), `submit_agent.py` (hackathon entrypoint), `best_model_dqn.pth` (weights). `agent_template.py` (DQN + training loop), `state_discretizer.py` (aux. utils, if used), `submit_agent.py` (entrypoint for hackathon runtime), `best_model_dqn.pth` (weights).
+> Files: `agent_template.py` (DQN + training loop), `state_discretizer.py` (aux utils), `submit_agent.py` (hackathon entrypoint), `best_model_dqn.pth` (weights).
 
 ---
 
@@ -84,13 +107,13 @@ Here, “experiments” means **change one thing at a time** (batch size, networ
 <div align="center">
   <img src="https://github.com/user-attachments/assets/f46e7ec0-11ba-40ac-b0d6-3bce6debaa17" width="500" alt="Report Fig. 3 — 64×64 network; batch size 64"/>
   <br/>
-  <sub><b>Fig 1 .</b> 64×64 network, batch 64 — strong mean performance (~249), good stability.</sub>
+  <sub><b>Fig 1.</b> 64×64 network, batch 64 — strong mean performance (~249), good stability.</sub>
 </div>
 
 <div align="center">
   <img src="https://github.com/user-attachments/assets/50ef8abe-0b8a-47a6-abcf-ac3cc56aaa49" width="500" alt="Report Fig. 4 — 128×64 network; batch size 128"/>
   <br/>
-  <sub><b>Fig 2 .</b> 128×64 network, batch 128 — best of our single‑DQN runs (~268 average over 100 tests).</sub>
+  <sub><b>Fig 2.</b> 128×64 network, batch 128 — best of our single‑DQN runs (~268 average over 100 tests).</sub>
 </div>
 
 *Why these two?* Batch size governs the **noise** of updates (bigger = smoother but less reactive), while network width governs **capacity** (wider = more expressive but easier to overfit). These plots show the clearest trade‑off we observed.
@@ -99,23 +122,23 @@ Here, “experiments” means **change one thing at a time** (batch size, networ
 
 ## ⚙️ Final hyperparameters (winning DQN)
 
-* **Network:** 2×(64) ReLU → 4 actions
-* **Optimizer / loss:** Adam (alpha = 5e-4), Huber
-* **Discount:** gamma = 0.99
-* **Replay:** buffer 1e5–1e6 (tested), batch 128
-* **ε‑greedy:** epsilon\_start = 1.0, decay = 0.995 → epsilon\_min = 0.01
-* **Target net update:** every 5 episodes
-* **Gradient clip:** L2 norm ≤ 1.0
+* **Network:** 2×(64) ReLU \$\to\$ 4 actions
+* **Optimizer / loss:** Adam (\$\alpha=5\times10^{-4}\$), Huber
+* **Discount:** \$\gamma=0.99\$
+* **Replay:** buffer \$10^{5}\$–\$10^{6}\$ (tested), batch \$128\$
+* **\$\varepsilon\$‑greedy:** \$\varepsilon\_0=1.0\$, decay \$0.995 \to \varepsilon\_{\min}=0.01\$
+* **Target net update:** every \$5\$ episodes
+* **Gradient clip:** \$\lVert \nabla\_\theta \rVert\_2 \le 1.0\$
 
 **Why these settings worked (in plain terms):**
 
 * **64×64 network:** enough capacity to model the lander’s dynamics without memorizing noise.
-* **Adam @ 5e‑4 + Huber:** Adam adapts step sizes per weight; Huber behaves like L2 near the target and L1 on outliers, so occasional bad targets don’t derail training.
-* **gamma = 0.99:** keeps the agent focused on a *whole landing sequence* (not just the next second) while still discounting the far future.
-* **Replay 1e5–1e6, batch 128:** a large, diverse memory prevents seeing the same short pattern repeatedly; batch 128 gives **stable** gradient estimates without making updates too sluggish.
-* **Epsilon schedule 1.0 → 0.01 (decay 0.995):** plenty of early exploration to discover strategies; settles to exploitation as performance improves.
-* **Target update every 5 episodes:** keeps the target network “fresh enough” while staying frozen long enough to stabilize bootstrapping.
-* **Grad clip at 1.0:** caps rare gradient spikes that can occur when rewards or Q‑targets momentarily jump.
+* **Adam @ \$5\times10^{-4}\$ + Huber:** Adam adapts step sizes per weight; Huber behaves like L2 near the target and L1 on outliers, so occasional bad targets don’t derail training.
+* **\$\gamma=0.99\$:** keeps the agent focused on a *whole landing sequence* (not just the next second) while still discounting the far future.
+* **Replay \$10^{5}\$–\$10^{6}\$, batch \$128\$:** a large, diverse memory prevents reusing the same short pattern; batch 128 yields **stable** gradients without making updates too sluggish.
+* **\$\varepsilon\$ schedule \$1.0 \to 0.01\$ (decay \$0.995\$):** plenty of early exploration to discover strategies; settles to exploitation as performance improves.
+* **Target update every \$5\$ episodes:** keeps the target network fresh enough while staying frozen long enough to stabilize bootstrapping.
+* **Grad clip at \$1.0\$:** caps rare gradient spikes when rewards or Q‑targets momentarily jump.
 
 ---
 
@@ -158,9 +181,23 @@ for episode = 1..N:
 
 ---
 
+## 📹 Side‑by‑side results (recap)
+
+Re‑embed the two MP4s here if you want the final results close to the conclusion:
+
+**Untrained**
+
+`UNTRAINED_MP4_URL`
+
+**Trained DQN**
+
+`TRAINED_MP4_URL`
+
+---
+
 ## 🙏 Acknowledgements
 
-Introduction to this project and guidance by **Dr. Sorina Dumitrescu** (McMaster University) .
+Guidance and course material by **Dr. Sorina Dumitrescu** (COMPENG 4SL4 — Fundamentals of Machine Learning). 
 
 ---
 
