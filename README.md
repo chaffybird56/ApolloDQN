@@ -4,7 +4,7 @@
 
 ---
 
-## 🎬 Demo (side‑by‑side)
+## 🎬 Demo
 
 <table>
 <tr>
