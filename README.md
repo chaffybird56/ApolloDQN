@@ -10,7 +10,7 @@ Paste two GitHub *user‑attachments* video links **on their own lines** (GitHub
 
 **Untrained (random policy)**
 
-(https://github.com/user-attachments/assets/fc91ac3b-d850-4c4d-ad8a-61e08d8477c5
+![lunar_lander](https://github.com/user-attachments/assets/ae4486bc-bba6-42c7-a0e6-258097509b88)
 
 **Trained DQN (exploitation)**
 
