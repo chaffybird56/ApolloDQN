@@ -23,11 +23,9 @@
 </tr>
 </table>
 
-> Tip: to record, save 60–90s MP4 from your evaluation script, then drag‑and‑drop into a GitHub comment to obtain a permanent `user-attachments` URL.
-
 ---
 
-## 💡 Intuition first (no jargon)
+## 💡 Intuition first 
 
 Imagine teaching a small rocket to land. At each moment it sees a snapshot of its situation (where it is, how fast it’s moving, how tilted it is, and whether its legs touch). It can fire one of four thrusters. Early on, it tries lots of moves to learn what works; over time it prefers moves that usually lead to soft, centered landings. To keep learning stable, it studies from a shuffled memory of past moments and compares against a slower, frozen copy of itself so its targets don’t shift while it’s learning.
 
@@ -125,7 +123,7 @@ Here, “experiments” means **change one thing at a time** (batch size, networ
 * **Network:** 2×(64) ReLU \$\to\$ 4 actions
 * **Optimizer / loss:** Adam (\$\alpha=5\times10^{-4}\$), Huber
 * **Discount:** \$\gamma=0.99\$
-* **Replay:** buffer \$10^{5}\$–\$10^{6}\$ (tested), batch \$128\$
+* **Replay:** buffer \$10^{5}\-$\$10^{6}\$ (tested), batch \$128\$
 * **\$\varepsilon\$‑greedy:** \$\varepsilon\_0=1.0\$, decay \$0.995 \to \varepsilon\_{\min}=0.01\$
 * **Target net update:** every \$5\$ episodes
 * **Gradient clip:** \$\lVert \nabla\_\theta \rVert\_2 \le 1.0\$
