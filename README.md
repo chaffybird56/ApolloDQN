@@ -2,7 +2,7 @@
 
 > A from‑scratch **Deep Q‑Network (DQN)** that learns to solve Gymnasium’s **LunarLander‑v3**. Implemented in PyTorch with **experience replay**, a **target network**, and **ε‑greedy** exploration. Includes experiments, hyperparameter sweeps, and a brief Double DQN attempt.
 ---
-## 🎬 Demo (side‑by‑side)
+## 🎬 Demo
 
 <table>
 <tr>
@@ -82,15 +82,15 @@ and nudge Q\_theta(s,a) toward *y* (Huber loss).
 Here, “experiments” means **change one thing at a time** (batch size, network width) and see how the learning curve shifts. The two most influential settings from our runs:
 
 <div align="center">
-  <img src="FIG3_FROM_REPORT_URL" width="500" alt="Report Fig. 3 — 64×64 network; batch size 64"/>
+  <img src="https://github.com/user-attachments/assets/f46e7ec0-11ba-40ac-b0d6-3bce6debaa17" width="500" alt="Report Fig. 3 — 64×64 network; batch size 64"/>
   <br/>
-  <sub><b>Fig 1 (report Fig. 3).</b> 64×64 network, batch 64 — strong mean performance (~249), good stability.</sub>
+  <sub><b>Fig 1 .</b> 64×64 network, batch 64 — strong mean performance (~249), good stability.</sub>
 </div>
 
 <div align="center">
-  <img src="FIG4_FROM_REPORT_URL" width="500" alt="Report Fig. 4 — 128×64 network; batch size 128"/>
+  <img src="https://github.com/user-attachments/assets/50ef8abe-0b8a-47a6-abcf-ac3cc56aaa49" width="500" alt="Report Fig. 4 — 128×64 network; batch size 128"/>
   <br/>
-  <sub><b>Fig 2 (report Fig. 4).</b> 128×64 network, batch 128 — best of our single‑DQN runs (~268 average over 100 tests).</sub>
+  <sub><b>Fig 2 .</b> 128×64 network, batch 128 — best of our single‑DQN runs (~268 average over 100 tests).</sub>
 </div>
 
 *Why these two?* Batch size governs the **noise** of updates (bigger = smoother but less reactive), while network width governs **capacity** (wider = more expressive but easier to overfit). These plots show the clearest trade‑off we observed.
@@ -158,12 +158,9 @@ for episode = 1..N:
 
 ---
 
-
----
-
 ## 🙏 Acknowledgements
 
-Guidance and course material by **Dr. Sorina Dumitrescu** (COMPENG 4SL4 — Fundamentals of Machine Learning). This project was completed with teammates **David Sagalovitch** and **Arji Thaiyib**.
+Introduction to this project and guidance by **Dr. Sorina Dumitrescu** (McMaster University) .
 
 ---
 
