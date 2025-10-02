@@ -54,7 +54,7 @@ Imagine teaching a small rocket to land. At each moment it sees a snapshot of it
 
 ---
 
-## 🧠 RL refresher — intuition → math (fully explained)
+## 🧠 RL refresher — intuition → math 
 
 **Goal.** Maximize the total future reward (the **discounted return**):
 
