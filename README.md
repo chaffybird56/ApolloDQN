@@ -98,7 +98,7 @@ The loss (Huber) nudges \$Q\_\theta(s,a)\$ toward \$y\$.
 
 ---
 
-## 🧪 Experiments & hyperparameter sweeps (from the report)
+## 🧪 Experiments & hyperparameter sweeps 
 
 Here, “experiments” means **change one thing at a time** (batch size, network width) and see how the learning curve shifts. The two most influential settings from our runs:
 
