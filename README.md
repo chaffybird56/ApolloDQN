@@ -1,4 +1,4 @@
-# Lunar Lander — DQN from Scratch (Hackathon Edition)
+# Lunar Lander — DQN from Scratch (Hackathon)
 
 > A from‑scratch **Deep Q‑Network (DQN)** that learns to solve Gymnasium’s **LunarLander‑v3**. Implemented in PyTorch with **experience replay**, a **target network**, and **ε‑greedy** exploration. Includes experiments, hyperparameter sweeps, and a brief Double DQN attempt.
 
