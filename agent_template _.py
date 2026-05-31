@@ -67,7 +67,7 @@ class LunarLanderAgent:
         # Make sure to:
         # 1) Evaluate the training in each episode by monitoring the average of the previous ~100
         #    episodes cumulative rewards (return).
-        # 2) Autosave the best model achived in each epoch based on the evaluation.
+        # 2) Autosave the best model achieved in each epoch based on the evaluation.
         pass
 
     def update(self, state, action, reward, next_state, done):
